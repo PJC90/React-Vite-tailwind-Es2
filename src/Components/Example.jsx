@@ -6,6 +6,7 @@ function Example (){
     // const handleClick = () => {
     //     setCount(count +1)
     //     document.title = `Conteggio: ${count}`
+    //  SENZA USE EFFECT NON SI AGGIORNA IN AUTOMATICO IL CONTATORE NEL TITOLO DELLA PAGINA
     // }
     useEffect(()=>{
         sessionStorage.setItem("count", count.toString())
