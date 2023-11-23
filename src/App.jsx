@@ -1,13 +1,12 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
 import CardForm from './Components/CardForm'
 import Card from './Components/Card'
 import Example from './Components/Example'
 
+
 function App() {
-  
+  const [data, setData] = useState([])
   const addCity = (city) => {
     setCities([...cities, city])
   }
@@ -42,6 +41,15 @@ function App() {
     },
 
   ])
+
+  useEffect(()=>{
+    fetch("https://jsonplaceholder.typicode.com/posts")
+    .then((response) => response.json())
+    .then((data) => {
+        setData(data)
+        console.log(data)
+    })
+},[])
   return (
     <>
     <Example/>
@@ -56,6 +64,17 @@ function App() {
         description={city.description}
          >
          </Card>
+      ))}
+      </div>
+    <div className='grid grid-cols-5 gap-10'>
+      {data && data.map((item)=>(
+        <div key={item.id} className='bg-slate-400 rounded-xl p-3 m-1 '>
+          <p className='text-white text-3xl text-left'>User: <span className='text-black'>{item.userId}</span></p>
+          <br />         
+          <p className='text-cyan-200'>{item.title}</p>
+          <br />         
+          <p>{item.body}</p>
+        </div>
       ))}
       </div>
     </>
