@@ -1,12 +1,38 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import './App.css'
 import CardForm from './Components/CardForm'
 import Card from './Components/Card'
 import Example from './Components/Example'
-
+// lo state {name:"", email:""} lo prende qui useReducer(formReducer, {name:"", email:""})
+//l' action sarebbe: "CHANGE_FIELD" e "RESET_FIELD"
+function formReducer (state, action){
+switch (action.type){
+  case "CHANGE_FIELD":
+    return {...state, [action.field]: action.value}
+    case "RESET_FIELD":
+      return {name:"", email:""}
+      default:
+        return state
+}
+}
 
 function App() {
   const [data, setData] = useState([])
+  const [formState, dispatchFormState] = useReducer(formReducer, {name:"", email:""})
+
+  const handleFieldChange = (field, value) => {
+dispatchFormState({type: "CHANGE_FIELD", field, value})
+  }
+  const resetForm = (e) => {
+    e.preventDefault()
+dispatchFormState({type: "RESET_FIELD"})
+  }
+  const sendForm = (e)=> {
+    e.preventDefault()
+    console.log(formState)
+  }
+  
+
   const addCity = (city) => {
     setCities([...cities, city])
   }
@@ -54,6 +80,18 @@ function App() {
     <>
     <Example/>
     <CardForm addCity={addCity}></CardForm>
+    <form className='bg-sky-500 p-5 m-10'>
+        <div className='p-3'> 
+          <label htmlFor="name">Nome:</label>
+          <input type="text" id='name' name='name' value={formState.name} onChange={(e) => handleFieldChange("name", e.target.value)} />
+        </div>
+        <div  className='p-3'>
+          <label htmlFor="email">Email:</label>
+          <input type="text" id='email' name='email' value={formState.email} onChange={(e) => handleFieldChange("email", e.target.value)} />
+        </div>
+        <button onClick={resetForm}  className='p-3 m-1'>Reset</button>
+        <button onClick={sendForm}  className='p-3 m-1'>Invia</button>
+      </form>
     <div className='grid grid-cols-5 gap-10'>
       {cities && cities.map((city)=>(
          <Card
@@ -77,6 +115,7 @@ function App() {
         </div>
       ))}
       </div>
+      
     </>
   )
 }
